@@ -74,7 +74,7 @@ namespace MatriculasYPagos.Formularios
             pagoSeleccionado.Asunto = asunto;
 
             // Llamar al método Agregar de la clase Pago
-            bool resultado = pagoSeleccionado.Agregar();
+            bool resultado = pagoSeleccionado.AgregarPago(pagoSeleccionado);
 
             // Manejar el resultado
             if (resultado)
@@ -96,11 +96,8 @@ namespace MatriculasYPagos.Formularios
                 // Obtener el ID del pago seleccionado en el DataGridView
                 int idPago = Convert.ToInt32(dgPagos.SelectedRows[0].Cells["ID_Pago"].Value);
 
-                // Crear una nueva instancia de Pago
-                Pagos pagoAEliminar = new Pagos { ID_Pago = idPago };
-
-                // Llamar al método Eliminar de la clase Pago
-                bool resultado = pagoAEliminar.Eliminar();
+                // Llamar al método Eliminar de la clase Pago proporcionando el ID_Pago
+                bool resultado = pagoSeleccionado.EliminarPago(idPago);
 
                 // Manejar el resultado
                 if (resultado)
@@ -119,46 +116,30 @@ namespace MatriculasYPagos.Formularios
             }
         }
 
-        private void btnActualizar_Click(object sender, EventArgs e)
+
+
+
+        private void btnActualizarPago_Click(object sender, EventArgs e)
         {
             // Verificar si hay una fila seleccionada en el DataGridView
             if (dgPagos.SelectedRows.Count > 0)
             {
                 // Obtener valores de los controles y la fila seleccionada en el DataGridView
                 int idPago = Convert.ToInt32(dgPagos.SelectedRows[0].Cells["ID_Pago"].Value);
-                int idAlumno = Convert.ToInt32(cmbIDAlumno.SelectedValue);
-                int idClase = Convert.ToInt32(cmbIDClase.SelectedValue);
-                decimal monto = Convert.ToDecimal(TxtMonto.Text);
-                DateTime fechaPago = dtpFechaPago.Value;
-                string asunto = TxtAsunto.Text;
 
-                // Asignar valores a la instancia de Pago
-                pagoSeleccionado.ID_Pago = idPago;
-                pagoSeleccionado.ID_Alumno = idAlumno;
-                pagoSeleccionado.ID_Clase = idClase;
-                pagoSeleccionado.Monto = monto;
-                pagoSeleccionado.Fecha_de_Pago = fechaPago;
-                pagoSeleccionado.Asunto = asunto;
+                // Resto del código...
 
-                // Llamar al método Actualizar de la clase Pago
-                bool resultado = pagoSeleccionado.Actualizar();
+                // Llamar al método Actualizar de la clase Pago proporcionando el pagoSeleccionado
+                bool resultado = pagoSeleccionado.ActualizarPago(pagoSeleccionado);
 
-                // Manejar el resultado
-                if (resultado)
-                {
-                    MessageBox.Show("Pago actualizado correctamente.");
-                    RefrescarDataGridView();
-                }
-                else
-                {
-                    MessageBox.Show("Error al actualizar el pago.");
-                }
+                // Resto del código...
             }
             else
             {
                 MessageBox.Show("Seleccione un pago para actualizar.");
             }
         }
+
 
         private void btnRefrescar_Click(object sender, EventArgs e)
         {
@@ -188,7 +169,7 @@ namespace MatriculasYPagos.Formularios
             dgPagos.Columns["ID_Alumno"].DataPropertyName = "ID_Alumno";
             dgPagos.Columns["ID_Clase"].DataPropertyName = "ID_Clase";
             dgPagos.Columns["Monto"].DataPropertyName = "Monto";
-            dgPagos.Columns["Fecha_de_Pago"].DataPropertyName = "Fecha_de_Pago";
+            dgPagos.Columns["Fecha_Pago"].DataPropertyName = "Fecha_Pago";
             dgPagos.Columns["Asunto"].DataPropertyName = "Asunto";
 
             // ... Otras configuraciones según tus necesidades
