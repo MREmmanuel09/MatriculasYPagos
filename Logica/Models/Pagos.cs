@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace Logica.Models
 {
@@ -9,95 +9,110 @@ namespace Logica.Models
     {
         public int ID_Pago { get; set; }
         public int ID_Alumno { get; set; }
+        public int ID_Clase { get; set; }
         public decimal Monto { get; set; }
-        public DateTime Fecha_Pago { get; set; }
+        public DateTime Fecha_de_Pago { get; set; }
+        public string Asunto { get; set; }
 
-        public bool Agregar()
+
+        public bool AgregarPago(Pagos pago)
         {
-            bool R = false;
+            bool resultado = false;
 
-            Conexion MiCcn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01; Database=PR; Integrated Security=true;");
+            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
 
-            MiCcn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", this.ID_Alumno));
-            MiCcn.ListaDeParametros.Add(new SqlParameter("@Monto", this.Monto));
-            MiCcn.ListaDeParametros.Add(new SqlParameter("@Fecha_Pago", this.Fecha_Pago));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", pago.ID_Alumno));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Clase", pago.ID_Clase));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@Monto", pago.Monto));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@Fecha_de_Pago", pago.Fecha_de_Pago));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@Asunto", pago.Asunto));
 
-            int resultado = MiCcn.EjecutarDML("SPPagosAgregar");
+            int resultadoDML = MiCnn.EjecutarDML("SPPagoAgregar");
 
-            if (resultado > 0)
-                R = true;
+            if (resultadoDML > 0)
+                resultado = true;
 
-            return R;
+            return resultado;
         }
 
-        public bool Eliminar()
+        // Método para eliminar un pago
+        public bool EliminarPago(int idPago)
         {
-            bool R = false;
+            bool resultado = false;
 
-            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01; Database=PR; Integrated Security=true;");
+            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
 
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Pago", this.ID_Pago));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Pago", idPago));
 
-            int resultado = MiCnn.EjecutarDML("SPPagosEliminar");
+            int resultadoDML = MiCnn.EjecutarDML("SPPagoEliminar");
 
-            if (resultado > 0)
-                R = true;
+            if (resultadoDML > 0)
+                resultado = true;
 
-            return R;
+            return resultado;
         }
 
-        public bool Actualizar()
+        // Método para actualizar un pago
+        public bool ActualizarPago(Pagos pago)
         {
-            bool R = false;
+            bool resultado = false;
 
-            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01; Database=PR; Integrated Security=true;");
+            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
 
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Pago", this.ID_Pago));
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", this.ID_Alumno));
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@Monto", this.Monto));
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@Fecha_Pago", this.Fecha_Pago));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Pago", pago.ID_Pago));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", pago.ID_Alumno));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Clase", pago.ID_Clase));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@Monto", pago.Monto));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@Fecha_de_Pago", pago.Fecha_de_Pago));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@Asunto", pago.Asunto));
 
-            int resultado = MiCnn.EjecutarDML("SPPagosActualizar");
+            int resultadoDML = MiCnn.EjecutarDML("SPPagoActualizar");
 
-            if (resultado > 0)
-                R = true;
+            if (resultadoDML > 0)
+                resultado = true;
 
-            return R;
+            return resultado;
         }
 
+        // Método para listar todos los pagos
         public DataTable ListarPagos()
         {
-            DataTable R = new DataTable();
+            DataTable resultado = new DataTable();
 
-            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01; Database=PR; Integrated Security=true;");
+            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
 
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@VerPagos", true));
+            // Limpiar cualquier parámetro anterior
+            MiCnn.ListaDeParametros.Clear();
 
-            R = MiCnn.EjecutarSELECT("SPPagosListar");
-            return R;
+            resultado = MiCnn.EjecutarSELECT("SPPagoListar");
+
+            return resultado;
         }
 
-        public Pagos ConsultarPorID(int IDPago)
+        // Método para consultar un pago por ID
+        public Pagos ConsultarPagoPorID(int idPago)
         {
-            Pagos R = new Pagos();
+            Pagos resultado = new Pagos();
 
-            Conexion MyCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01; Database=PR; Integrated Security=true;");
+            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
 
-            MyCnn.ListaDeParametros.Add(new SqlParameter("@ID_Pago", IDPago));
+            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Pago", idPago));
 
-            DataTable DatosPago = MyCnn.EjecutarSELECT("SPPagosConsultarPorID");
+            DataTable DatosPago = MiCnn.EjecutarSELECT("SPPagoConsultarPorID");
 
             if (DatosPago != null && DatosPago.Rows.Count > 0)
             {
                 DataRow MiFila = DatosPago.Rows[0];
 
-                R.ID_Pago = Convert.ToInt32(MiFila["ID_Pago"]);
-                R.ID_Alumno = Convert.ToInt32(MiFila["ID_Alumno"]);
-                R.Monto = Convert.ToDecimal(MiFila["Monto"]);
-                R.Fecha_Pago = Convert.ToDateTime(MiFila["Fecha_Pago"]);
+                resultado.ID_Pago = Convert.ToInt32(MiFila["ID_Pago"]);
+                resultado.ID_Alumno = Convert.ToInt32(MiFila["ID_Alumno"]);
+                resultado.ID_Clase = Convert.ToInt32(MiFila["ID_Clase"]);
+                resultado.Monto = Convert.ToDecimal(MiFila["Monto"]);
+                resultado.Fecha_de_Pago = Convert.ToDateTime(MiFila["Fecha_de_Pago"]);
+                resultado.Asunto = MiFila["Asunto"].ToString();
             }
 
-            return R;
+            return resultado;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Logica
             cadenaConexion = connectionString;
             ListaDeParametros = new List<SqlParameter>();
         }
-        
+
         public SqlConnection ObtenerConexion()
         {
             try

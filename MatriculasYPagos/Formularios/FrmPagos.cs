@@ -6,22 +6,17 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MatriculasYPagos.Formularios
 {
-    public partial class FrmPago : Form
+    public partial class FrmPagos : Form
     {
         // Crear una instancia de la clase Pago
-        private Pago pagoSeleccionado = new Pago();
+        private Pagos pagoSeleccionado = new Pagos();
 
-        public FrmPago()
+        public FrmPagos()
         {
             InitializeComponent();
         }
 
-        private void dgPagos_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Evento CellContentClick
-        }
-
-        private void FrmPago_Load(object sender, EventArgs e)
+        private void FrmPagos_Load(object sender, EventArgs e)
         {
             // Cargar datos en los ComboBox al cargar el formulario
             CargarComboAlumnos();
@@ -102,7 +97,7 @@ namespace MatriculasYPagos.Formularios
                 int idPago = Convert.ToInt32(dgPagos.SelectedRows[0].Cells["ID_Pago"].Value);
 
                 // Crear una nueva instancia de Pago
-                Pago pagoAEliminar = new Pago { ID_Pago = idPago };
+                Pagos pagoAEliminar = new Pagos { ID_Pago = idPago };
 
                 // Llamar al método Eliminar de la clase Pago
                 bool resultado = pagoAEliminar.Eliminar();
@@ -174,7 +169,7 @@ namespace MatriculasYPagos.Formularios
         private void RefrescarDataGridView()
         {
             // Crear una instancia de la clase Pago para obtener los datos
-            Pago pago = new Pago();
+            Pagos pago = new Pagos();
 
             // Asignar el origen de datos del DataGridView al DataTable devuelto por ListarPagos
             dgPagos.DataSource = pago.ListarPagos();
@@ -196,27 +191,8 @@ namespace MatriculasYPagos.Formularios
             dgPagos.Columns["Fecha_de_Pago"].DataPropertyName = "Fecha_de_Pago";
             dgPagos.Columns["Asunto"].DataPropertyName = "Asunto";
 
-            // Configurar otras propiedades según tus necesidades
-            // dgPagos.AutoGenerateColumns = true;
-
-            // ... Otros ajustes si son necesarios
+            // ... Otras configuraciones según tus necesidades
         }
 
-        // ... Otros métodos del formulario ...
-
-        private void FrmPago_Load_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FrmPago_Load_2(object sender, EventArgs e)
-        {
-
-        }
     }
 }
