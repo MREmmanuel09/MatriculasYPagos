@@ -17,7 +17,7 @@ namespace MatriculasYPagos
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMatricula());
+            Application.Run(new FrmPagos());
         }
     }
 }

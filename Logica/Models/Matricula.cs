@@ -65,62 +65,77 @@ namespace Logica.Models
         public int ID_Clase { get; set; }
         public DateTime Fecha_Matricula { get; set; }
 
-        public bool Agregar()
+        public class MatriculaInfo
         {
-            bool R = false; 
+            // Propiedades de la matrícula
+            public int ID_Matricula { get; set; }
+            public int ID_Alumno { get; set; }
+            public int ID_Clase { get; set; }
+            public DateTime Fecha_Matricula { get; set; }
 
-            Conexion MiCcn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
+            public bool Agregar()
+            {
+                bool resultado = false;
 
-            MiCcn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", this.ID_Alumno));
-            MiCcn.ListaDeParametros.Add(new SqlParameter("@ID_Clase", this.ID_Clase));
-            MiCcn.ListaDeParametros.Add(new SqlParameter("@Fecha_Matricula", this.Fecha_Matricula));
+                Conexion MiCcn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
 
-            int resultado = MiCcn.EjecutarDML("SPMatriculaAgregar");
+                MiCcn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", this.ID_Alumno));
+                MiCcn.ListaDeParametros.Add(new SqlParameter("@ID_Clase", this.ID_Clase));
+                MiCcn.ListaDeParametros.Add(new SqlParameter("@Fecha_Matricula", this.Fecha_Matricula));
 
-            if (resultado > 0)
-                R = true;
+                int ejecutarDMLResultado = MiCcn.EjecutarDML("SPMatriculaAgregar");
 
-            return R;
-        }   
-                
+                if (ejecutarDMLResultado > 0)
+                {
+                    resultado = true;
+                }
 
+                return resultado;
+            }
 
-        public bool Eliminar()
-        {
-            bool R = false;
+            public bool Eliminar()
+            {
+                bool resultado = false;
 
-            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
+                Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
 
+                MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Matricula", this.ID_Matricula));
 
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Matricula", this.ID_Matricula));
+                int ejecutarDMLResultado = MiCnn.EjecutarDML("SPMatriculaEliminar");
 
-            int resultado = MiCnn.EjecutarDML("SPMatriculaEliminar");
+                if (ejecutarDMLResultado > 0)
+                {
+                    resultado = true;
+                }
 
-            if (resultado > 0)
-                R = true;
+                return resultado;
+            }
 
-            return R;
+            public bool Actualizar()
+            {
+                bool resultado = false;
+
+                Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
+
+                MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Matricula", this.ID_Matricula));
+                MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", this.ID_Alumno));
+                MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Clase", this.ID_Clase));
+                MiCnn.ListaDeParametros.Add(new SqlParameter("@Fecha_Matricula", this.Fecha_Matricula));
+
+                int ejecutarDMLResultado = MiCnn.EjecutarDML("SPMatriculaActualizar");
+
+                if (ejecutarDMLResultado > 0)
+                {
+                    resultado = true;
+                }
+
+                return resultado;
+            }
+
+            // ... otros métodos y propiedades
         }
 
-        public bool Actualizar()
-        {
-            bool R = false;
 
-            Conexion MiCnn = new Conexion("Server=PCEMMANUEL\\SQLEXPRESS01;Database=PR;Integrated Security=True;");
-
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Matricula", this.ID_Matricula));
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Alumno", this.ID_Alumno));
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@ID_Clase", this.ID_Clase));
-            MiCnn.ListaDeParametros.Add(new SqlParameter("@Fecha_Matricula", this.Fecha_Matricula));
-
-            int resultado = MiCnn.EjecutarDML("SPMatriculaActualizar");
-
-            if (resultado > 0)
-                R = true;
-
-            return R;
-        }
-        
 
         public DataTable ListarMatriculas()
         {

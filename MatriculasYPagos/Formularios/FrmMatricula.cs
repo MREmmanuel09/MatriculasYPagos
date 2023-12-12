@@ -36,137 +36,179 @@ namespace MatriculasYPagos.Formularios
 
         private void CargarComboAlumnos()
         {
-            // Crear una instancia de la clase Alumno para obtener los datos
-            Alumno alumno = new Alumno();
+            try
+            {
+                Alumno alumno = new Alumno();
+                DataTable dtAlumnos = alumno.ObtenerAlumnos();
 
-            // Obtener los datos directamente desde la base de datos
-            DataTable dtAlumnos = alumno.ObtenerAlumnos();
-
-            // Asignar la lista como origen de datos para el ComboBox
-            cmbIDAlumno.DataSource = dtAlumnos;
-            cmbIDAlumno.DisplayMember = "Nombre"; // Ajusta el campo a mostrar según tu esquema
-            cmbIDAlumno.ValueMember = "id"; // Valor asociado a la selección
+                cmbIDAlumno.DataSource = dtAlumnos;
+                cmbIDAlumno.DisplayMember = "Nombre";
+                cmbIDAlumno.ValueMember = "id";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los alumnos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void CargarComboClases()
         {
-            // Crear una instancia de la clase Clase para obtener los datos
-            Clase clase = new Clase();
-
-            // Obtener los datos directamente desde la base de datos
-            DataTable dtClases = clase.ObtenerClases();
-
-            // Asignar la lista como origen de datos para el ComboBox
-            cmbIDClase.DataSource = dtClases;
-            cmbIDClase.DisplayMember = "Nombre"; // Ajusta el campo a mostrar según tu esquema
-            cmbIDClase.ValueMember = "ID_Clase"; // Valor asociado a la selección
-        }
-
-        // ... Otros métodos del formulario ...
-
-        
-
-        private void btnAgregar_Click(object sender, EventArgs e)
-        {
-            // Obtener valores de los controles
-            int idAlumno = Convert.ToInt32(cmbIDAlumno.SelectedValue);
-            int idClase = Convert.ToInt32(cmbIDClase.SelectedValue);
-            DateTime fechaMatricula = dtpFechaMatricula.Value;
-
-            // Asignar valores a la instancia de Matricula
-            matriculaSeleccionada.ID_Alumno = idAlumno;
-            matriculaSeleccionada.ID_Clase = idClase;
-            matriculaSeleccionada.Fecha_Matricula = fechaMatricula;
-
-            // Llamar al método Agregar de la clase Matricula
-            bool resultado = matriculaSeleccionada.Agregar();
-
-            // Manejar el resultado
-            if (resultado)
+            try
             {
-                MessageBox.Show("Matrícula agregada correctamente.");
-                RefrescarDataGridView();
+                Clase clase = new Clase();
+                DataTable dtClases = clase.ObtenerClases();
+
+                cmbIDClase.DataSource = dtClases;
+                cmbIDClase.DisplayMember = "Nombre";
+                cmbIDClase.ValueMember = "ID_Clase";
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Error al agregar la matrícula.");
+                MessageBox.Show($"Error al cargar las clases: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
 
-        private void btnEliminar_Click(object sender, EventArgs e)
-        {
-            // Verificar si hay una fila seleccionada en el DataGridView
-            if (dgMatriculas.SelectedRows.Count > 0)
-            {
-                // Obtener el ID de la matrícula seleccionada en el DataGridView
-                int idMatricula = Convert.ToInt32(dgMatriculas.SelectedRows[0].Cells["ID_Matricula"].Value);
-
-                // Crear una nueva instancia de Matricula
-                Matricula matriculaAEliminar = new Matricula { ID_Matricula = idMatricula };
-
-                // Llamar al método Eliminar de la clase Matricula
-                bool resultado = matriculaAEliminar.Eliminar();
-
-                // Manejar el resultado
-                if (resultado)
-                {
-                    MessageBox.Show("Matrícula eliminada correctamente.");
-                    RefrescarDataGridView();
-                }
-                else
-                {
-                    MessageBox.Show("Error al eliminar la matrícula.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Seleccione una matrícula para eliminar.");
-            }
-        }
 
         private void btnActualizar_Click(object sender, EventArgs e)
         {
             // Verificar si hay una fila seleccionada en el DataGridView
             if (dgMatriculas.SelectedRows.Count > 0)
             {
-                // Obtener valores de los controles y la fila seleccionada en el DataGridView
+                // Obtener los valores de la fila seleccionada
                 int idMatricula = Convert.ToInt32(dgMatriculas.SelectedRows[0].Cells["ID_Matricula"].Value);
-                int idAlumno = Convert.ToInt32(cmbIDAlumno.SelectedValue);
-                int idClase = Convert.ToInt32(cmbIDClase.SelectedValue);
-                DateTime fechaMatricula = dtpFechaMatricula.Value;
+                int idAlumno = Convert.ToInt32(dgMatriculas.SelectedRows[0].Cells["ID_Alumno"].Value);
+                int idClase = Convert.ToInt32(dgMatriculas.SelectedRows[0].Cells["ID_Clase"].Value);
 
-                // Asignar valores a la instancia de Matricula
-                matriculaSeleccionada.ID_Matricula = idMatricula;
-                matriculaSeleccionada.ID_Alumno = idAlumno;
-                matriculaSeleccionada.ID_Clase = idClase;
-                matriculaSeleccionada.Fecha_Matricula = fechaMatricula;
+                // Imprimir los valores para verificar en la consola de salida
+                Console.WriteLine($"ID_Matricula: {idMatricula}, ID_Alumno: {idAlumno}, ID_Clase: {idClase}");
 
-                // Llamar al método Actualizar de la clase Matricula
-                bool resultado = matriculaSeleccionada.Actualizar();
-
-                // Manejar el resultado
-                if (resultado)
+                // Verificar si cmbIDAlumno tiene elementos seleccionables
+                if (cmbIDAlumno.Items.Count > 0)
                 {
-                    MessageBox.Show("Matrícula actualizada correctamente.");
-                    RefrescarDataGridView();
+                    // Verificar si el valor de idAlumno está en la lista
+                    if (cmbIDAlumno.Items.Contains(idAlumno))
+                    {
+                        cmbIDAlumno.SelectedValue = idAlumno;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"El valor {idAlumno} no está en la lista de cmbIDAlumno.");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Error al actualizar la matrícula.");
+                    Console.WriteLine("El ComboBox cmbIDAlumno no tiene elementos seleccionables.");
+                }
+
+                // Haz lo mismo para cmbIDClase
+                if (cmbIDClase.Items.Count > 0)
+                {
+                    // Verificar si el valor de idClase está en la lista
+                    if (cmbIDClase.Items.Contains(idClase))
+                    {
+                        cmbIDClase.SelectedValue = idClase;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"El valor {idClase} no está en la lista de cmbIDClase.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("El ComboBox cmbIDClase no tiene elementos seleccionables.");
+                }
+
+                // Asegurarte de almacenar el ID de matrícula seleccionado para su posterior actualización
+                matriculaSeleccionada.ID_Matricula = idMatricula;
+            }
+            else
+            {
+                MessageBox.Show("Selecciona una fila antes de intentar actualizar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+
+        private void btnAgregar_Click(object sender, EventArgs e)
+        {
+            // Obtener valores de los controles del formulario
+            int idAlumno = Convert.ToInt32(cmbIDAlumno.SelectedValue);
+            int idClase = Convert.ToInt32(cmbIDClase.SelectedValue);
+            DateTime fechaMatricula = DateTime.Now;  // Puedes ajustar esto según tu lógica
+
+            // Crear una nueva instancia de MatriculaInfo y establecer los valores
+            Matricula.MatriculaInfo nuevaMatricula = new Matricula.MatriculaInfo()
+            {
+                ID_Alumno = idAlumno,
+                ID_Clase = idClase,
+                Fecha_Matricula = fechaMatricula
+            };
+
+            // Llamar al método Agregar de MatriculaInfo
+            if (nuevaMatricula.Agregar())
+            {
+                // Refrescar el DataGridView
+                RefrescarDataGridView();
+
+                // Limpiar controles después de agregar
+                LimpiarControles();
+
+                MessageBox.Show("Matrícula agregada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Error al agregar la matrícula.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            // Verificar si hay una fila seleccionada en el DataGridView
+            if (dgMatriculas.SelectedRows.Count > 0)
+            {
+                // Obtener el ID de matrícula de la fila seleccionada
+                int idMatricula = Convert.ToInt32(dgMatriculas.SelectedRows[0].Cells["ID_Matricula"].Value);
+
+                // Crear una nueva instancia de MatriculaInfo y establecer el ID de matrícula
+                Matricula.MatriculaInfo matriculaEliminar = new Matricula.MatriculaInfo()
+                {
+                    ID_Matricula = idMatricula
+                };
+
+                // Llamar al método Eliminar de MatriculaInfo
+                if (matriculaEliminar.Eliminar())
+                {
+                    // Refrescar el DataGridView
+                    RefrescarDataGridView();
+
+                    // Limpiar controles después de eliminar
+                    LimpiarControles();
+
+                    MessageBox.Show("Matrícula eliminada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error al eliminar la matrícula.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
             {
-                MessageBox.Show("Seleccione una matrícula para actualizar.");
+                MessageBox.Show("Selecciona una fila antes de intentar eliminar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnRefrescar_Click(object sender, EventArgs e)
+
+        private void LimpiarControles()
         {
-            // Refrescar el DataGridView llamando al método ListarMatriculas
-            RefrescarDataGridView();
+            // Limpiar los controles del formulario después de agregar o eliminar
+            cmbIDAlumno.SelectedIndex = -1;
+            cmbIDClase.SelectedIndex = -1;
+            // Limpiar otros controles si es necesario
+            matriculaSeleccionada.ID_Matricula = 0;  // Reiniciar el ID seleccionado
         }
+
 
         private void RefrescarDataGridView()
         {
@@ -185,13 +227,13 @@ namespace MatriculasYPagos.Formularios
 
             // Configurar el modo de selección a celdas
             dgMatriculas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-    
+
             // Agregar columnas al DataGridView según tus necesidades
             dgMatriculas.Columns["ID_Matricula"].DataPropertyName = "ID_Matricula";
             dgMatriculas.Columns["ID_Alumno"].DataPropertyName = "ID_Alumno";
             dgMatriculas.Columns["ID_Clase"].DataPropertyName = "ID_Clase";
             dgMatriculas.Columns["Fecha_Matricula"].DataPropertyName = "Fecha_Matricula";
-            
+
 
             // Configurar otras propiedades según tus necesidades
             // dgMatriculas.AutoGenerateColumns = true;
@@ -210,7 +252,11 @@ namespace MatriculasYPagos.Formularios
 
         }
 
-        
+        private void FrmMatricula_Load_2(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
 
